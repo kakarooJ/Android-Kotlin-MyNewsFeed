@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,12 +14,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kakaroo.mynewsfeed.databinding.ActivityMainBinding
 import com.kakaroo.mynewsfeed.entity.Article
+import com.kakaroo.mynewsfeed.entity.Topic
 import com.kakaroo.mynewsfeed.html.JSoupParser
 
 class MainActivity : AppCompatActivity() {
@@ -30,14 +28,12 @@ class MainActivity : AppCompatActivity() {
     // 매번 null 체크를 할 필요 없이 편의성을 위해 바인딩 변수 재 선언
     private val binding get() = mBinding!!
 
-    var mArticleList: ArrayList<Article> = ArrayList<Article>()
+    var mTopicList: ArrayList<Topic> = ArrayList<Topic>()
 
-    var mAdapter = RecyclerAdapter(this, mArticleList)
+    var mAdapter = TopicAdapter(this, mTopicList)
     lateinit var mRecyclerView: RecyclerView
     lateinit var mLayoutManager: RecyclerView.LayoutManager
     lateinit var mPref: SharedPreferences
-
-    var keyword: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         mRecyclerView.layoutManager = mLayoutManager
         binding.recyclerView.adapter = mAdapter
 
-        mPref = getSharedPreferences(Common.SHARED_PREF_NAME, 0)
+        mPref = PreferenceManager.getDefaultSharedPreferences(mContext)
 
         checkInternetPermissions()
 
@@ -67,14 +63,22 @@ class MainActivity : AppCompatActivity() {
             handled
         }
 
-        mArticleList.add(Article(1, "2022-03-14 16:15","여기는 기사타이틀입니다.","http://naver.com"))
-
-        var data: List<RecyclerAdapter.Item> = ArrayList<RecyclerAdapter.Item>()
+        //test code
+        /*
+        val article1 = Article(1, "2022-03-14 16:15","기사타이틀 1 입니다.","http://naver.com")
+        val article2 = Article(2, "2022-03-15 12:24","기사타이틀 2 입니다.","http://daum.net")
+        val article3 = Article(3, "2022-03-16 09:38","기사타이틀 3 입니다.","http://google.com")
+        val topic = Topic(1, "SearchEngine", ArrayList<Article>())
+        topic.articles.add(article1)
+        topic.articles.add(article2)
+        topic.articles.add(article3)
+        mTopicList.add(topic)
+         */
     }
 
     private fun hideKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0);
+        inputMethodManager.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -96,27 +100,31 @@ class MainActivity : AppCompatActivity() {
         binding.btSearch.setOnClickListener(ButtonListener())
     }
 
-
     inner class ButtonListener : View.OnClickListener {
         override fun onClick(v: View?) {
             if (v != null) {
                 when(v.id) {
                     R.id.bt_search -> {
-                        keyword = if(binding.etKeyword.text.isNotEmpty()) binding.etKeyword.text.toString()
+                        val keyword = if(binding.etKeyword.text.isNotEmpty()) binding.etKeyword.text.toString()
                                 else Common.DEFAULT_PAGE_KEYWORD
+
+                        //getKeywordFromPref()
                         val url = Common.PAGE_URL_NAVER + keyword
 
                         hideKeyboard()
 
                         val jsoupAsyncTask = JSoupParser(url, object : onPostExecuteListener {
                             override fun onPostExecute(result: ArrayList<Article>) {
-                                mArticleList.clear()
-                                mArticleList.addAll(result)
+                                //mTopicList.clear()
+                                val topic = Topic(mTopicList.size, keyword, result)
+                                //mTopicList.add(0, topic)    //맨 앞에 추가
+                                mTopicList.add(topic)
                                 mAdapter.notifyDataSetChanged()
+
                                 updateTextView(keyword, result.size)
 
                                 runOnUiThread {
-                                    if(mArticleList.isEmpty()) {
+                                    if(mTopicList.isEmpty()) {
                                         Toast.makeText(applicationContext, "기사가 없습니다.!!", Toast.LENGTH_SHORT).show()
                                     }
                                 }
@@ -131,8 +139,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun printList() {
-        if(mArticleList.size != 0) {
-            Log.i(Common.MY_TAG, mArticleList.toString())
+        if(mTopicList.size != 0) {
+            Log.i(Common.MY_TAG, mTopicList.toString())
         }
     }
 
@@ -146,7 +154,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "인터넷 권한이 없습니다.!!", Toast.LENGTH_SHORT).show()
             ActivityCompat.requestPermissions(this,
                 arrayOf(android.Manifest.permission.INTERNET), Common.REQUEST_INTERNET_PERMISSION)
-        } else {
         }
     }
     override fun onRequestPermissionsResult( requestCode: Int, permissions: Array<out String>, grantResults: IntArray ) {
@@ -163,5 +170,24 @@ class MainActivity : AppCompatActivity() {
 
     interface onPostExecuteListener {
         fun onPostExecute(result: ArrayList<Article>)
+    }
+
+    private fun getKeywordFromPref() : ArrayList<String> {
+        var strList: ArrayList<String> = ArrayList()
+        val keyword = mPref.getString("keyword_key", "")
+        if (keyword != null) {
+            if(keyword.isEmpty()) {
+                strList.add(Common.DEFAULT_PAGE_KEYWORD)
+            } else {
+                val keywordList = keyword.split(",")
+                for(item in keywordList) {
+                    strList.add(item)
+                }
+            }
+        } else {
+            strList.add(Common.DEFAULT_PAGE_KEYWORD)
+        }
+
+        return strList
     }
 }

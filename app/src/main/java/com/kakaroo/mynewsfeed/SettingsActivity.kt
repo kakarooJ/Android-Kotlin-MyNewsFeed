@@ -47,6 +47,16 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
+            val keywordPref: EditTextPreference? = findPreference("keyword_key")
+            keywordPref?.setOnPreferenceChangeListener{ preference, newValue ->
+                if(newValue == "") {
+                    val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
+                    pref.edit().putString("keyword_key", "").apply()
+                    Log.i(Common.MY_TAG, "키워드 입력값이 없습니다.")
+                }
+                true
+            }
+
             val urlKeyPref: EditTextPreference? = findPreference("url_key")
             urlKeyPref?.setOnPreferenceChangeListener{ preference, newValue ->
                 if(newValue == "") {

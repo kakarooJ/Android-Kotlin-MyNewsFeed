@@ -16,4 +16,6 @@ object Common {
 
     val DEFAULT_URL     :   String  = "http://3.35.40.166:8080"//"http://192.168.219.111:8080"//"http://127.0.0.1:8080"//"http://10.0.2.2:8080"//
 
+    const val SUBJECT_VIEW = 1
+    const val ARTICLE_VIEW = 2
 }
