@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         mRecyclerView.layoutManager = mLayoutManager
         binding.recyclerView.adapter = mAdapter
 
-        mPref = PreferenceManager.getDefaultSharedPreferences(mContext)
+        mPref = PreferenceManager.getDefaultSharedPreferences(this.applicationContext)
 
         checkInternetPermissions()
 
