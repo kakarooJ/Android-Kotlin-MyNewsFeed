@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MyNewsFeed</string>
+    <string name="setting">설정</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="keyword_header">검색 카테고리</string>
+    <string name="request_header">요청 카테고리</string>
+    <string name="service_header">서비스 카테고리</string>
+
+    <!-- keyword Preferences -->
+    <string name="keywords">입력한 키워드</string>
+    <string name="keywords_description">복수의 키워드는 ","로 구분하세요</string>
+
+    <!-- request Preferences -->
+    <string name="request_time">요청 시간 주기</string>
+
+    <!-- service Preferences -->
+    <string name="service_start">서비스 시작</string>
+    <string name="server_url">서버 URL</string>
+
+</resources>

@@ -1,0 +1,50 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/keyword_header"
+        app:iconSpaceReserved="false"
+        app:key="keyword_category_key">
+
+        <EditTextPreference
+            app:key="keyword_key"
+            app:title="@string/keywords"
+            app:summary="@string/keywords_description"
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/request_header"
+        app:iconSpaceReserved="false"
+        app:key="request_category_key">
+
+        <ListPreference
+            app:defaultValue="2시간"
+            app:entries="@array/request_items"
+            app:entryValues="@array/request_values"
+            app:key="request_key"
+            app:title="@string/request_time"
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/service_header"
+        app:iconSpaceReserved="false"
+        app:key="service_category_key">
+
+        <SwitchPreferenceCompat
+            app:key="service_key"
+            app:title="@string/service_start"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="url_key"
+            app:title="@string/server_url"
+            app:defaultValue="http://3.35.40.166:8080"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
