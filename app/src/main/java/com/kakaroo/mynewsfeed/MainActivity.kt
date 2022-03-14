@@ -105,33 +105,38 @@ class MainActivity : AppCompatActivity() {
             if (v != null) {
                 when(v.id) {
                     R.id.bt_search -> {
-                        val keyword = if(binding.etKeyword.text.isNotEmpty()) binding.etKeyword.text.toString()
-                                else Common.DEFAULT_PAGE_KEYWORD
-
-                        //getKeywordFromPref()
-                        val url = Common.PAGE_URL_NAVER + keyword
 
                         hideKeyboard()
 
-                        val jsoupAsyncTask = JSoupParser(url, object : onPostExecuteListener {
-                            override fun onPostExecute(result: ArrayList<Article>) {
-                                //mTopicList.clear()
-                                val topic = Topic(mTopicList.size, keyword, result)
-                                //mTopicList.add(0, topic)    //맨 앞에 추가
-                                mTopicList.add(topic)
-                                mAdapter.notifyDataSetChanged()
+                        //val keyword = if(binding.etKeyword.text.isNotEmpty()) binding.etKeyword.text.toString() else Common.DEFAULT_PAGE_KEYWORD
 
-                                updateTextView(keyword, result.size)
+                        val keywordList: ArrayList<String> = ArrayList()
+                        if(binding.etKeyword.text.isNotEmpty()) {   //추가
+                            keywordList.add(binding.etKeyword.text.toString())
+                        } else {    //설정에서 다시 읽어오기
+                            keywordList.addAll(getKeywordFromPref())
+                            mTopicList.clear()
+                        }
 
-                                runOnUiThread {
-                                    if(mTopicList.isEmpty()) {
-                                        Toast.makeText(applicationContext, "기사가 없습니다.!!", Toast.LENGTH_SHORT).show()
+                        for(keyword in keywordList) {
+                            val url:String = Common.PAGE_URL_NAVER + keyword
+                            val jsoupAsyncTask = JSoupParser(url, object : onPostExecuteListener {
+                                override fun onPostExecute(result: ArrayList<Article>) {
+                                    //mTopicList.clear()
+                                    val topic = Topic(mTopicList.size, keyword, result)
+                                    mTopicList.add(0, topic)    //맨 앞에 추가
+                                    updateTextView(keyword, result.size)
+                                    mAdapter.notifyDataSetChanged()
+
+                                    runOnUiThread {
+                                        if(mTopicList.isEmpty()) {
+                                            Toast.makeText(applicationContext, "기사가 없습니다.!!", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
                                 }
-                            }
-                        })
-                        jsoupAsyncTask.execute()
-
+                            })
+                            jsoupAsyncTask.execute()
+                        }
                     }
                 }
             }

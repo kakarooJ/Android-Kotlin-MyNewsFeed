@@ -35,13 +35,17 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
         )
         holder.rv_article.setHasFixedSize(true)
         holder.tv_topic.text = mTopicList?.get(position)?.title
+        holder.tv_topicNum.text = mTopicList?.get(position)?.articles?.size.toString() + " 개"
+
     }
 
     override fun getItemCount(): Int = listData?.size ?: 0
 
     inner class TopicHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tv_topic: TextView = itemView.findViewById(R.id.tv_topic)
+        val tv_topicNum: TextView = itemView.findViewById(R.id.tv_topicNum)
         val rv_article: RecyclerView = itemView.findViewById(R.id.rv_articles)
+
 
         fun setItem(topic: Topic) {
             tv_topic.text = topic.title

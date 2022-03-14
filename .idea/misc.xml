@@ -5,12 +5,13 @@
       <map>
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/drawable-v24/item_border.xml" value="0.1421875" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/activity_main.xml" value="0.2458045409674235" />
-        <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/article_item_recycler.xml" value="0.2" />
+        <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/article_item_recycler.xml" value="0.4" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/inner_recycle_layout.xml" value="0.1421875" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/item_recycler.xml" value="0.4" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/list_header.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/outer_recycler.xml" value="0.1421875" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/single_subject.xml" value="0.1296875" />
+        <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/layout/topic_item_recycler.xml" value="0.32421875" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/menu/option_menu.xml" value="0.12604166666666666" />
         <entry key="..\:/Users/twins/AndroidStudioProjects/MyNewsFeed/app/src/main/res/xml/root_preferences.xml" value="0.24974358974358973" />
       </map>
