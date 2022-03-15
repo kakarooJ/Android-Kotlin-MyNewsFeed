@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kakaroo.mynewsfeed.databinding.ActivityMainBinding
 import com.kakaroo.mynewsfeed.entity.Article
+import com.kakaroo.mynewsfeed.entity.StockCode
 import com.kakaroo.mynewsfeed.entity.Topic
 import com.kakaroo.mynewsfeed.html.JSoupParser
 
@@ -106,36 +107,57 @@ class MainActivity : AppCompatActivity() {
                 when(v.id) {
                     R.id.bt_search -> {
 
-                        hideKeyboard()
-
-                        //val keyword = if(binding.etKeyword.text.isNotEmpty()) binding.etKeyword.text.toString() else Common.DEFAULT_PAGE_KEYWORD
-
-                        val keywordList: ArrayList<String> = ArrayList()
-                        if(binding.etKeyword.text.isNotEmpty()) {   //추가
-                            keywordList.add(binding.etKeyword.text.toString())
-                        } else {    //설정에서 다시 읽어오기
-                            keywordList.addAll(getKeywordFromPref())
-                            mTopicList.clear()
+                        //종목명과 종목코드 구하기
+                        val keywordList: ArrayList<StockCode> = ArrayList()
+                        if(binding.etKeyword.text.isNotEmpty()) {   //Editor가 비어 있지 않으면, 맨 위에 기사 추가
+                            keywordList.add(getStockCodeFrom(binding.etKeyword.text.toString()))
+                        } else {    //Editor가 비어 있으면, 설정에서 다시 읽어오기
+                            mTopicList.clear()  //새로 갱신
+                            for(keyword in getKeywordFromPref()) {
+                                keywordList.add(getStockCodeFrom(keyword))
+                            }
                         }
 
-                        for(keyword in keywordList) {
-                            val url:String = Common.PAGE_URL_NAVER + keyword
-                            val jsoupAsyncTask = JSoupParser(url, object : onPostExecuteListener {
-                                override fun onPostExecute(result: ArrayList<Article>) {
-                                    //mTopicList.clear()
-                                    val topic = Topic(mTopicList.size, keyword, result)
-                                    mTopicList.add(0, topic)    //맨 앞에 추가
-                                    updateTextView(keyword, result.size)
-                                    mAdapter.notifyDataSetChanged()
+                        hideKeyboard()  //키보드를 내린다.
+                        binding.etKeyword.setText("")   //Editor를 지운다.
 
-                                    runOnUiThread {
-                                        if(mTopicList.isEmpty()) {
-                                            Toast.makeText(applicationContext, "기사가 없습니다.!!", Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
+                        for(keyword in keywordList) {
+                            for(type in Common.ARTICLE_URL..Common.STOCK_URL) {
+                                if(type == Common.STOCK_URL && keyword.code == "") {
+                                    Log.i(Common.MY_TAG, "종목코드가 없습니다.")
+                                    continue
                                 }
-                            })
-                            jsoupAsyncTask.execute()
+                                
+                                var url: String = if(type == Common.ARTICLE_URL) Common.PAGE_URL_NAVER + keyword.stocks
+                                    else Common.STOCK_URL_NAVER +keyword.code
+
+                                val jsoupAsyncTask =
+                                    JSoupParser(url, type, object : onPostExecuteListener {
+                                        override fun onPostExecute(result: ArrayList<Article>, price: String) {
+                                            //mTopicList.clear()
+                                            var topic: Topic
+                                            if(type == Common.ARTICLE_URL) {
+                                                topic = Topic(mTopicList.size, keyword.stocks, "", result)
+                                                mTopicList.add(0, topic)    //맨 앞에 추가
+                                                updateTextView(keyword.stocks, result.size)
+                                            } else if(type == Common.STOCK_URL) {
+                                                mTopicList[0].price = price
+                                            }
+                                            mAdapter.notifyDataSetChanged()
+
+                                            runOnUiThread {
+                                                if (mTopicList.isEmpty()) {
+                                                    Toast.makeText(
+                                                        applicationContext,
+                                                        "기사가 없습니다.!!",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                        }
+                                    })
+                                jsoupAsyncTask.execute()
+                            }
                         }
                     }
                 }
@@ -174,7 +196,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     interface onPostExecuteListener {
-        fun onPostExecute(result: ArrayList<Article>)
+        fun onPostExecute(result: ArrayList<Article>, price: String)
+    }
+
+    private fun getStockCodeFrom(str: String) : StockCode {
+        val stockCode: StockCode = StockCode("", "")
+
+        val strList = str.split("#")
+        stockCode.stocks = strList[0]
+        if(strList.size >= 2) {
+            stockCode.code = strList[1]
+        }
+        return stockCode
     }
 
     private fun getKeywordFromPref() : ArrayList<String> {

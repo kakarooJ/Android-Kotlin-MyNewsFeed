@@ -5,6 +5,11 @@ object Common {
     val SHARED_PREF_NAME        = "shared_pref"
 
     val PAGE_URL_NAVER          =   "http://newssearch.naver.com/search.naver?where=rss&query="
+    val STOCK_URL_NAVER         =   "https://finance.naver.com/item/main.naver?code="//"https://api.finance.naver.com/siseJson.naver"
+
+    const val ARTICLE_URL       = 0
+    const val STOCK_URL         = 1
+
     val DEFAULT_PAGE_KEYWORD    =   "메이저리그"
 
     val REQUEST_INTERNET_PERMISSION     =   10
