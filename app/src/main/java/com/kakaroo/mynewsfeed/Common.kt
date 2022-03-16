@@ -11,6 +11,8 @@ object Common {
     const val STOCK_URL         = 1
 
     val DEFAULT_PAGE_KEYWORD    =   "메이저리그"
+    val STOCK_PRICE_PLUS_WORD   =   "플러스"
+    val STOCK_PRICE_MINUS_WORD  =   "마이너스"
 
     val REQUEST_INTERNET_PERMISSION     =   10
 

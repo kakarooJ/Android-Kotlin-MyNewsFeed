@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,9 +42,9 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
             false
         )
         holder.rv_article.setHasFixedSize(true)
-        holder.tv_topic.text = mTopicList?.get(position)?.title
+        //holder.tv_topic.text = mTopicList?.get(position)?.title
         holder.tv_topicNum.text = mTopicList?.get(position)?.articles?.size.toString() + " 개"
-        holder.tv_stockPrice.text = mTopicList?.get(position)?.price
+        //holder.tv_stockPrice.text = mTopicList?.get(position)?.price
     }
 
     override fun getItemCount(): Int = listData?.size ?: 0
@@ -58,6 +59,14 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
         fun setItem(topic: Topic) {
             tv_topic.text = topic.title
             tv_stockPrice.text = topic.price
+
+            //default는 검정(보합)
+            if(topic.price.contains(Common.STOCK_PRICE_PLUS_WORD)){
+                tv_stockPrice.setTextColor(Color.RED)
+            } else if(topic.price.contains(Common.STOCK_PRICE_MINUS_WORD)){
+                tv_stockPrice.setTextColor(Color.BLUE)
+            }
+
 
             // 아이템 클릭 이벤트 처리.
             tv_topic.setOnClickListener(View.OnClickListener() {
