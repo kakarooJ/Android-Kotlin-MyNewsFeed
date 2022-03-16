@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/keyword_header"
         app:iconSpaceReserved="false"
@@ -11,11 +12,25 @@
             app:useSimpleSummaryProvider="true"
             app:iconSpaceReserved="false"/>
 
+        <SwitchPreferenceCompat
+            app:key="result_order_key"
+            app:title="@string/result_reverse_order"
+            app:iconSpaceReserved="false"/>
+
+        <EditTextPreference
+            app:key="keyword_maxnum_key"
+            app:title="@string/article_maxnum"
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="50"
+            app:iconSpaceReserved="false"
+            android:dialogLayout="@layout/preference_edit_text"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/request_header"
         app:iconSpaceReserved="false"
-        app:key="request_category_key">
+        app:key="request_category_key"
+        app:enabled="false">
 
         <ListPreference
             app:defaultValue="2시간"
@@ -30,7 +45,8 @@
 
     <PreferenceCategory app:title="@string/service_header"
         app:iconSpaceReserved="false"
-        app:key="service_category_key">
+        app:key="service_category_key"
+        app:enabled="false">
 
         <SwitchPreferenceCompat
             app:key="service_key"

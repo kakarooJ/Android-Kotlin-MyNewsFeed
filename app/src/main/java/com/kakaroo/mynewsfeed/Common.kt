@@ -2,10 +2,10 @@ package com.kakaroo.mynewsfeed
 
 object Common {
     val MY_TAG                  =   "kakaroo-newsfeed"
-    val SHARED_PREF_NAME        = "shared_pref"
 
     val PAGE_URL_NAVER          =   "http://newssearch.naver.com/search.naver?where=rss&query="
     val STOCK_URL_NAVER         =   "https://finance.naver.com/item/main.naver?code="//"https://api.finance.naver.com/siseJson.naver"
+    val SEARCH_URL_NAVER        =   "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query="
 
     const val ARTICLE_URL       = 0
     const val STOCK_URL         = 1
@@ -15,7 +15,7 @@ object Common {
     val REQUEST_INTERNET_PERMISSION     =   10
 
     //Settings
-    val KEYWORD_MAX_NUM         =   10
+    val ARTICLE_MAX_NUM         =   50
     val CRAWLING_PERIOD_HOUR    =   2   //2시간마다
     val JSOUP_PARSING_DATA_MAX_NUM  =   10
 

@@ -1,10 +1,17 @@
 package com.kakaroo.mynewsfeed
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kakaroo.mynewsfeed.entity.Topic
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +58,17 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
         fun setItem(topic: Topic) {
             tv_topic.text = topic.title
             tv_stockPrice.text = topic.price
+
+            // 아이템 클릭 이벤트 처리.
+            tv_topic.setOnClickListener(View.OnClickListener() {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Common.SEARCH_URL_NAVER + topic.title))
+                mContext.startActivity(intent)
+            })
+
+            tv_stockPrice.setOnClickListener(View.OnClickListener()  { _ ->
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Common.STOCK_URL_NAVER + topic.code))
+                mContext.startActivity(intent)
+            })
         }
     }
 

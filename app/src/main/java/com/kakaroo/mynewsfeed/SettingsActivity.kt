@@ -3,8 +3,10 @@ package com.kakaroo.mynewsfeed
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
+import java.lang.Integer.parseInt
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -48,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             val keywordPref: EditTextPreference? = findPreference("keyword_key")
-            keywordPref?.setOnPreferenceChangeListener{ preference, newValue ->
+            keywordPref?.setOnPreferenceChangeListener{ _, newValue ->
                 if(newValue == "") {
                     val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
                     pref.edit().putString("keyword_key", "").apply()
@@ -57,8 +59,27 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
+            val articleNumPref: EditTextPreference? = findPreference("keyword_maxnum_key")
+            articleNumPref?.setOnPreferenceChangeListener{ _, newValue ->
+                if(newValue == "") {
+                    //val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
+                    //pref.edit().putString("keyword_maxnum_key", Common.ARTICLE_MAX_NUM.toString()).apply()
+                    Toast.makeText(context, "입력값이 없습니다.", Toast.LENGTH_SHORT).show()
+                    Log.i(Common.MY_TAG, "기사 최대 갯수 입력값이 없습니다.")
+                    false
+                } else if(parseInt(newValue.toString()) > Common.ARTICLE_MAX_NUM) {
+                    //val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
+                    //articleNumPref.text = Common.ARTICLE_MAX_NUM.toString()
+                    //pref.edit().putString("keyword_maxnum_key", Common.ARTICLE_MAX_NUM.toString()).apply()
+                    Toast.makeText(context, "최대개수 ${Common.ARTICLE_MAX_NUM}보다 작거나 같은 값을 입력해주세요!", Toast.LENGTH_SHORT).show()
+                    false
+                } else {
+                    true
+                }
+            }
+
             val urlKeyPref: EditTextPreference? = findPreference("url_key")
-            urlKeyPref?.setOnPreferenceChangeListener{ preference, newValue ->
+            urlKeyPref?.setOnPreferenceChangeListener{ _, newValue ->
                 if(newValue == "") {
                     val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
                     pref.edit().putString("url_key", Common.DEFAULT_URL).apply()

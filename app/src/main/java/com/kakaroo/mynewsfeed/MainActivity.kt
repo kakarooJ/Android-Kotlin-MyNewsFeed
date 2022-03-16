@@ -22,6 +22,7 @@ import com.kakaroo.mynewsfeed.entity.Article
 import com.kakaroo.mynewsfeed.entity.StockCode
 import com.kakaroo.mynewsfeed.entity.Topic
 import com.kakaroo.mynewsfeed.html.JSoupParser
+import java.lang.Integer.parseInt
 
 class MainActivity : AppCompatActivity() {
     //전역변수로 binding 객체선언
@@ -106,7 +107,6 @@ class MainActivity : AppCompatActivity() {
             if (v != null) {
                 when(v.id) {
                     R.id.bt_search -> {
-
                         //종목명과 종목코드 구하기
                         val keywordList: ArrayList<StockCode> = ArrayList()
                         if(binding.etKeyword.text.isNotEmpty()) {   //Editor가 비어 있지 않으면, 맨 위에 기사 추가
@@ -121,6 +121,9 @@ class MainActivity : AppCompatActivity() {
                         hideKeyboard()  //키보드를 내린다.
                         binding.etKeyword.setText("")   //Editor를 지운다.
 
+                        val bReverse: Boolean = mPref.getBoolean("result_order_key", false)
+                        val articleMaxCnt: Int = parseInt(mPref.getString("keyword_maxnum_key", Common.ARTICLE_MAX_NUM.toString()))
+
                         for(keyword in keywordList) {
                             for(type in Common.ARTICLE_URL..Common.STOCK_URL) {
                                 if(type == Common.STOCK_URL && keyword.code == "") {
@@ -132,16 +135,28 @@ class MainActivity : AppCompatActivity() {
                                     else Common.STOCK_URL_NAVER +keyword.code
 
                                 val jsoupAsyncTask =
-                                    JSoupParser(url, type, object : onPostExecuteListener {
+                                    JSoupParser(url, type, articleMaxCnt, object : onPostExecuteListener {
                                         override fun onPostExecute(result: ArrayList<Article>, price: String) {
                                             //mTopicList.clear()
                                             var topic: Topic
                                             if(type == Common.ARTICLE_URL) {
-                                                topic = Topic(mTopicList.size, keyword.stocks, "", result)
-                                                mTopicList.add(0, topic)    //맨 앞에 추가
+                                                topic = Topic(mTopicList.size, keyword.stocks, "", "", result)
+                                                if(bReverse) {
+                                                    mTopicList.add(0, topic)    //맨 앞으로 추가
+                                                } else {
+                                                    mTopicList.add(topic)
+                                                }
                                                 updateTextView(keyword.stocks, result.size)
                                             } else if(type == Common.STOCK_URL) {
-                                                mTopicList[0].price = price
+                                                if(bReverse) {
+                                                    mTopicList[0].code = keyword.code
+                                                    mTopicList[0].price = price
+                                                } else {
+                                                    if(mTopicList.size > 0) {
+                                                        mTopicList[mTopicList.size-1].code = keyword.code
+                                                        mTopicList[mTopicList.size-1].price = price
+                                                    }
+                                                }
                                             }
                                             mAdapter.notifyDataSetChanged()
 

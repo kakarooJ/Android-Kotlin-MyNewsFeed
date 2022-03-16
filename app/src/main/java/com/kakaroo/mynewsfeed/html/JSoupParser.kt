@@ -1,7 +1,8 @@
 package com.kakaroo.mynewsfeed.html
 
 import android.os.AsyncTask
-import android.util.Log
+import android.view.View
+import android.widget.Button
 import com.kakaroo.mynewsfeed.Common
 import com.kakaroo.mynewsfeed.MainActivity
 import com.kakaroo.mynewsfeed.entity.Article
@@ -12,10 +13,14 @@ import org.jsoup.select.Elements
 
 
 //TODO : Coroutine
-class JSoupParser(val url: String, val type: Int, val callback: MainActivity.onPostExecuteListener): AsyncTask<Void, Void, Void>() {
+class JSoupParser(private val url: String, private val type: Int, private val maxCnt: Int, private val callback: MainActivity.onPostExecuteListener): AsyncTask<Void, Void, Void>() {
 
     var mList: ArrayList<Article> = ArrayList<Article>()
     var mPrice: String = ""
+
+    override fun onPreExecute() {
+        super.onPreExecute()
+    }
 
     override fun doInBackground(vararg params: Void?): Void? {
         //Log.i(Common.MY_TAG, "URL: $url")
@@ -24,14 +29,13 @@ class JSoupParser(val url: String, val type: Int, val callback: MainActivity.onP
         if(type == Common.ARTICLE_URL) {
             val contentElements: Elements = doc.select("item")
             for ((i, elem) in contentElements.withIndex()) {
+                if(i == maxCnt) {   //i는 1부터
+                    break
+                }
                 var date = elem.select("pubDate").text()
                 date = date.substring(0, date.lastIndexOf(" "))
                 val title = elem.select("title").text()
                 val link = elem.select("link").text()
-                //Log.d(Common.MY_TAG, "------------------- $i ---------------")
-                //Log.d(Common.MY_TAG, date)
-                //Log.d(Common.MY_TAG, title)
-                //Log.d(Common.MY_TAG, link)
                 mList.add(Article(i, date, title, link))
             }
         } else if(type == Common.STOCK_URL) {
