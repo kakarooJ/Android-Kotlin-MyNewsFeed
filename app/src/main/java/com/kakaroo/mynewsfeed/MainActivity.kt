@@ -394,7 +394,5 @@ class MainActivity : AppCompatActivity() {
         return strList
     }
 
-    private fun getSearchEngine(engineType: Int): Common.SearchEngine {
-        return Common.SearchEngine.values()[engineType]
-    }
+    private fun getSearchEngine(engineType: Int) = Common.SearchEngine.values()[engineType]
 }
