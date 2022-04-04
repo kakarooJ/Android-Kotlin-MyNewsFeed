@@ -18,32 +18,68 @@
                     android:layout_height="match_parent"
                     android:layout_margin="2dp">
 
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_margin="2dp">
+
+                        <ImageView
+                            android:id="@+id/iv_thumb"
+                            android:layout_width="70dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/news_thumb_jpg"/>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp">
+
+                        <TextView
+                            android:id="@+id/tv_date"
+                            android:layout_width="40dp"
+                            android:layout_height="32dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginBottom="0dp"
+                            android:ellipsize="marquee"
+                            android:lines="3"
+                            android:layout_gravity="right"
+                            android:text="Wed, 16 Mar 2022 16:00:00"
+                            android:textSize="8dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_corp"
+                            android:layout_width="40dp"
+                            android:layout_height="16dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="2dp"
+                            android:layout_marginBottom="4dp"
+                            android:ellipsize="marquee"
+                            android:singleLine="true"
+                            android:layout_gravity="right"
+                            android:text="매일경제"
+                            android:textSize="8dp"/>
+
+                        </LinearLayout>
+
+                </LinearLayout>
+
                         <TextView
                             android:id="@+id/tv_title"
                             android:layout_width="110dp"
-                            android:layout_height="56dp"
+                            android:layout_height="60dp"
                             android:layout_marginLeft="4dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginRight="8dp"
                             android:layout_marginBottom="2dp"
                             android:ellipsize="end"
                             android:maxLines="4"
-                            android:text="뉴스 타이틀 블라블라...."
+                            android:text="[증시마감]코스피, 인플레 우려 완화에 반등... 코스닥, 2.36% 상승]"
                             android:textSize="12dp" />
-
-                        <TextView
-                            android:id="@+id/tv_date"
-                            android:layout_width="110dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginRight="4dp"
-                            android:layout_marginBottom="4dp"
-                            android:ellipsize="marquee"
-                            android:singleLine="true"
-                            android:layout_gravity="right"
-                            android:text="2022-03-14 16:00"
-                            android:textSize="8dp"/>
-
 
                 </LinearLayout>
 

@@ -1,21 +1,18 @@
-package com.kakaroo.mynewsfeed
+package com.kakaroo.mynewsfeed.adapter
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kakaroo.mynewsfeed.entity.Topic
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kakaroo.mynewsfeed.utility.Common
+import com.kakaroo.mynewsfeed.R
 
 class TopicAdapter(private val context: Context, private val listData: ArrayList<Topic>?)
     : RecyclerView.Adapter<TopicAdapter.TopicHolder>() {
@@ -65,6 +62,8 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
                 tv_stockPrice.setTextColor(Color.RED)
             } else if(topic.price.contains(Common.STOCK_PRICE_MINUS_WORD)){
                 tv_stockPrice.setTextColor(Color.BLUE)
+            } else {
+                tv_stockPrice.setTextColor(Color.BLACK)
             }
 
 

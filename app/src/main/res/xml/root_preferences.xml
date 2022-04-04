@@ -9,6 +9,15 @@
             app:key="keyword_key"
             app:title="@string/keywords"
             app:summary="@string/keywords_description"
+            app:useSimpleSummaryProvider="false"
+            app:iconSpaceReserved="false"/>
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/engine_items"
+            app:entryValues="@array/engine_values"
+            app:key="engine_key"
+            app:title="@string/search_engine"
             app:useSimpleSummaryProvider="true"
             app:iconSpaceReserved="false"/>
 
@@ -21,7 +30,7 @@
             app:key="keyword_maxnum_key"
             app:title="@string/article_maxnum"
             app:useSimpleSummaryProvider="true"
-            android:defaultValue="50"
+            android:defaultValue="15"
             app:iconSpaceReserved="false"
             android:dialogLayout="@layout/preference_edit_text"/>
 
@@ -56,7 +65,7 @@
         <EditTextPreference
             app:key="url_key"
             app:title="@string/server_url"
-            app:defaultValue="http://3.35.40.166:8080"
+            app:defaultValue="http://127.0.0.1:8080"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 

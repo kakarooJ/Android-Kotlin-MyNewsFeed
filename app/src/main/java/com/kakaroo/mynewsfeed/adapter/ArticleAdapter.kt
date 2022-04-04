@@ -1,21 +1,18 @@
-package com.kakaroo.mynewsfeed
+package com.kakaroo.mynewsfeed.adapter
 
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kakaroo.mynewsfeed.entity.Article
-import androidx.core.content.ContextCompat.startActivity
 
 import android.content.Intent
 import android.net.Uri
-import androidx.core.content.ContextCompat
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.kakaroo.mynewsfeed.R
 
 
 class ArticleAdapter(private val context: Context, private val listData: ArrayList<Article>?)
@@ -42,12 +39,23 @@ class ArticleAdapter(private val context: Context, private val listData: ArrayLi
     override fun getItemCount(): Int = listData?.size ?: 0
 
     inner class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tv_date: TextView = itemView.findViewById(R.id.tv_date)
-        private val tv_title: TextView = itemView.findViewById(R.id.tv_title)
+        private val imgThumb: ImageView = itemView.findViewById(R.id.iv_thumb)
+        private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
+        private val tvDate: TextView = itemView.findViewById(R.id.tv_date)
+        private val tvCorp: TextView = itemView.findViewById(R.id.tv_corp)
 
         fun setItem(article: Article) {
-            tv_date.text = article.date.toString()
-            tv_title.text = article.title.toString()
+            val imgName = if(article.imgUrl == "") R.drawable.news_thumb_jpg else article.imgUrl
+
+            Glide
+                .with(itemView.context)
+                .load(imgName)   //img drawable
+                .centerCrop()
+                .placeholder(android.R.drawable.stat_sys_upload)
+                .into(imgThumb)
+            tvDate.text = article.date.toString()
+            tvTitle.text = article.title.toString()
+            tvCorp.text = article.newsCorp.toString()
 
             // 아이템 클릭 이벤트 처리.
             itemView.setOnClickListener(View.OnClickListener() {

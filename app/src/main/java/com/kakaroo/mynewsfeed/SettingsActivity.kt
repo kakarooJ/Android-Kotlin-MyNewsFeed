@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
+import com.kakaroo.mynewsfeed.utility.Common
 import java.lang.Integer.parseInt
 
 class SettingsActivity : AppCompatActivity() {
@@ -50,14 +51,24 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             val keywordPref: EditTextPreference? = findPreference("keyword_key")
-            keywordPref?.setOnPreferenceChangeListener{ _, newValue ->
-                if(newValue == "") {
+            keywordPref?.summary = if(keywordPref?.text == null || keywordPref?.text == "") Common.KEYOWRD_HINT else keywordPref?.text
+            keywordPref?.setOnPreferenceChangeListener{ preference, newValue ->
+                if(newValue == null || newValue == "") {
                     val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
                     pref.edit().putString("keyword_key", "").apply()
                     Log.i(Common.MY_TAG, "키워드 입력값이 없습니다.")
+                    preference.summary = Common.KEYOWRD_HINT
+                } else {
+                    preference.summary = newValue.toString()
                 }
                 true
             }
+
+            /*val engineListPref: ListPreference? = findPreference("engine_key")
+            if(engineListPref?.value == null || engineListPref?.value == "" || engineListPref?.value == "0") {
+                engineListPref?.summary = Common.ENGINE_NAVER_SUMMARY
+                engineListPref?.value = "0"
+            }*/
 
             val articleNumPref: EditTextPreference? = findPreference("keyword_maxnum_key")
             articleNumPref?.setOnPreferenceChangeListener{ _, newValue ->
@@ -90,17 +101,19 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setPreferenceEnableDisable(enabled: Boolean) {
-            val keywordCategoryPref: PreferenceCategory? = findPreference("keyword_category_key")
-            if (keywordCategoryPref != null) {
-                keywordCategoryPref.isEnabled = enabled
-            }
-            val requestCategoryPref: PreferenceCategory? = findPreference("request_category_key")
-            if (requestCategoryPref != null) {
-                requestCategoryPref.isEnabled = enabled
-            }
-            val urlKeyPref: EditTextPreference? = findPreference("url_key")
-            if (urlKeyPref != null) {
-                urlKeyPref.isEnabled = enabled
+            if(Common.SERVER_FUNCTION_ENABLE == 1) {
+                val keywordCategoryPref: PreferenceCategory? = findPreference("keyword_category_key")
+                if (keywordCategoryPref != null) {
+                    keywordCategoryPref.isEnabled = enabled
+                }
+                val requestCategoryPref: PreferenceCategory? = findPreference("request_category_key")
+                if (requestCategoryPref != null) {
+                    requestCategoryPref.isEnabled = enabled
+                }
+                val urlKeyPref: EditTextPreference? = findPreference("url_key")
+                if (urlKeyPref != null) {
+                    urlKeyPref.isEnabled = enabled
+                }
             }
         }
     }

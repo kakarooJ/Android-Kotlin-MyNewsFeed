@@ -10,15 +10,15 @@ android {
         applicationId "com.kakaroo.mynewsfeed"
         minSdk 21
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -50,4 +50,11 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
+
+    //글라이드는 안드로이드에서 이미지를 빠르고 효율적으로 불러올 수 있게 도와주는 라이브러리
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
 }
