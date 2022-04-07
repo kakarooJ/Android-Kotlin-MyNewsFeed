@@ -128,147 +128,154 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(applicationContext, "인터넷이 연결되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
                             return
                         }
-
-                        //종목명과 종목코드 구하기
-                        var bManualInput = false
-                        val keyWordList: ArrayList<StockCode> = ArrayList()
-                        if(binding.etKeyword.text.isNotEmpty()) {   //Editor가 비어 있지 않으면, 맨 위에 기사 추가
-                            keyWordList.add(getStockCodeFrom(binding.etKeyword.text.toString()))
-                            bManualInput = true
-                        } else {    //Editor가 비어 있으면, 설정에서 다시 읽어오기
-                            mTopicList.clear()  //새로 갱신
-                            for(keyword in getKeywordFromPref()) {
-                                keyWordList.add(getStockCodeFrom(keyword))
-                            }
-                        }
-
-                        if(keyWordList.size == 0) {
-                            Log.d(Common.MY_TAG, "입력된 키워드가 없습니다.")
-                            Toast.makeText(applicationContext, "키워드를 입력하시거나 설정에서 키워드를 저장해 주세요.",
-                                Toast.LENGTH_SHORT).show()
-                            return
-                        }
-
-                        hideKeyboard()  //키보드를 내린다.
-                        //binding.etKeyword.setText("")   //Editor를 지운다.
-
-                        var bReverse = true //최신 기사가 가장 위로 올라오게 하기 위해
-                        if(!bManualInput) { //Editor가 비어 있어 설정값에서 값을 가져오는 경우
-                            bReverse = mPref.getBoolean("result_order_key", false)
-                        }
-                        val articleMaxCnt: Int = parseInt(mPref.getString("keyword_maxnum_key", Common.ARTICLE_MAX_NUM.toString()))
-                        val engineType: Int = parseInt(mPref.getString("engine_key", Common.SearchEngine.ENGINE_NAVER.value.toString()))
-
-                        binding.btSearch.isEnabled = false
-
-                        var asyncTryCnt = 0
-                        for( (idx, keyWord) in keyWordList.withIndex()) {
-                                
-                                var url = getSearchEngine(engineType).url
-
-                                asyncTryCnt++
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    try {
-                                        withTimeout(Common.HTTP_CRAWLING_TIMEOUT_MILLIS) {
-                                            //Log.e(Common.MY_TAG, "Force to stop due to Coroutine's Timeout")
-                                            val coroutine = async {
-                                                executeCrawling(url, keyWord.stocks, keyWord.code, engineType, articleMaxCnt) }
-
-                                            val result = coroutine.await()
-                                            //Log.d(Common.MY_TAG, "asyncTryCnt[$asyncTryCnt], keyWord.stocks[${keyWord.stocks}")
-
-                                            asyncTryCnt--
-                                            val topic = Topic(idx, keyWord.stocks, keyWord.code, "", result.first)
-
-                                            if(bReverse) {
-                                                mTopicList.add(0, topic)    //맨 앞으로 추가
-                                                mTopicList[0].code = keyWord.code
-                                                mTopicList[0].price = result.second
-                                            } else {
-                                                mTopicList.add(topic)
-                                                mTopicList[mTopicList.size-1].code = keyWord.code
-                                                mTopicList[mTopicList.size-1].price = result.second
-                                            }
-
-                                            if(!bManualInput && asyncTryCnt == 0) {
-                                                mTopicList.sortWith(compareBy<Topic> {it.idx})
-                                            }
-
-                                            withContext(Dispatchers.Main) {
-                                                updateTextView(getSearchEngine(engineType).valueName)
-                                                mAdapter.notifyDataSetChanged()
-
-                                                if(asyncTryCnt == 0) {
-                                                    Log.d(Common.MY_TAG, "CoroutineScope is completed")
-                                                    binding.btSearch.isEnabled = true
-
-                                                    if (mTopicList.isEmpty()) {
-                                                        Toast.makeText(
-                                                            applicationContext,
-                                                            "기사가 없습니다.!!",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } catch(te: TimeoutCancellationException) {
-                                        Log.e(Common.MY_TAG, "Timetout!!! - asyncTryCnt[$asyncTryCnt]")
-                                        withContext(Dispatchers.Main) {
-                                            binding.btSearch.isEnabled = true
-
-                                            Toast.makeText(
-                                                applicationContext,
-                                                "시간 초과",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                            }
-                                /*
-                                val jsoupAsyncTask =
-                                    JSoupParser(url, strKeyWord, type, engineType, articleMaxCnt, object : onPostExecuteListener {
-                                        override fun onPostExecute(result: ArrayList<Article>, price: String) {
-                                            //mTopicList.clear()
-                                            var topic: Topic
-                                            if(type == Common.ARTICLE_URL) {
-                                                topic = Topic(mTopicList.size, keyWord.stocks, "", "", result)
-                                                if(bReverse) {
-                                                    mTopicList.add(0, topic)    //맨 앞으로 추가
-                                                } else {
-                                                    mTopicList.add(topic)
-                                                }
-                                                updateTextView(keyWord.stocks, result.size)
-                                            } else if(type == Common.STOCK_URL) {
-                                                if(bReverse) {
-                                                    mTopicList[0].code = keyWord.code
-                                                    mTopicList[0].price = price
-                                                } else {
-                                                    if(mTopicList.size > 0) {
-                                                        mTopicList[mTopicList.size-1].code = keyWord.code
-                                                        mTopicList[mTopicList.size-1].price = price
-                                                    }
-                                                }
-                                            }
-                                            mAdapter.notifyDataSetChanged()
-
-                                            runOnUiThread {
-                                                if (mTopicList.isEmpty()) {
-                                                    Toast.makeText(
-                                                        applicationContext,
-                                                        "기사가 없습니다.!!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            }
-                                        }
-                                    })
-                                jsoupAsyncTask.execute()*/
-                            //}   //end of for(type in Common.ARTICLE_URL..Common.STOCK_URL) {
-                        }
+                        fetchNews()
                     }
                 }
             }
+        }
+    }   //end of inner class
+
+    private fun fetchNews() {
+        //종목명과 종목코드 구하기
+        var bManualInput = false
+        val keyWordList: ArrayList<StockCode> = ArrayList()
+        if(binding.etKeyword.text.isNotEmpty()) {   //Editor가 비어 있지 않으면, 맨 위에 기사 추가
+            keyWordList.add(getStockCodeFrom(binding.etKeyword.text.toString()))
+            bManualInput = true
+        } else {    //Editor가 비어 있으면, 설정에서 다시 읽어오기
+            mTopicList.clear()  //새로 갱신
+            for(keyword in getKeywordFromPref()) {
+                keyWordList.add(getStockCodeFrom(keyword))
+            }
+        }
+
+        if(keyWordList.size == 0) {
+            Log.d(Common.MY_TAG, "입력된 키워드가 없습니다.")
+            Toast.makeText(applicationContext, "키워드를 입력하시거나 설정에서 키워드를 저장해 주세요.",
+                Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        hideKeyboard()  //키보드를 내린다.
+        //binding.etKeyword.setText("")   //Editor를 지운다.
+
+        var bReverse = true //최신 기사가 가장 위로 올라오게 하기 위해
+        if(!bManualInput) { //Editor가 비어 있어 설정값에서 값을 가져오는 경우
+            bReverse = mPref.getBoolean("result_order_key", false)
+        }
+        val articleMaxCnt: Int = parseInt(mPref.getString("keyword_maxnum_key", Common.ARTICLE_MAX_NUM.toString()))
+        val engineType: Int = parseInt(mPref.getString("engine_key", Common.SearchEngine.ENGINE_NAVER.value.toString()))
+
+        binding.btSearch.isEnabled = false
+        binding.progressBar.visibility = View.VISIBLE
+
+        var asyncTryCnt = 0
+
+        for( (idx, keyWord) in keyWordList.withIndex()) {
+
+            var url = getSearchEngine(engineType).url
+
+            asyncTryCnt++
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    withTimeout(Common.HTTP_CRAWLING_TIMEOUT_MILLIS) {
+                        //Log.e(Common.MY_TAG, "Force to stop due to Coroutine's Timeout")
+                        val coroutine = async {
+                            executeCrawling(url, keyWord.stocks, keyWord.code, engineType, articleMaxCnt) }
+
+                        val result = coroutine.await()
+                        //Log.d(Common.MY_TAG, "asyncTryCnt[$asyncTryCnt], keyWord.stocks[${keyWord.stocks}")
+
+                        asyncTryCnt--
+                        val topic = Topic(idx, keyWord.stocks, keyWord.code, "", result.first)
+
+                        if(bReverse) {
+                            mTopicList.add(0, topic)    //맨 앞으로 추가
+                            mTopicList[0].code = keyWord.code
+                            mTopicList[0].price = result.second
+                        } else {
+                            mTopicList.add(topic)
+                            mTopicList[mTopicList.size-1].code = keyWord.code
+                            mTopicList[mTopicList.size-1].price = result.second
+                        }
+
+                        if(!bManualInput && asyncTryCnt == 0) {
+                            mTopicList.sortWith(compareBy<Topic> {it.idx})
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            updateTextView(getSearchEngine(engineType).valueName)
+                            //mAdapter.notifyDataSetChanged()
+                            binding.progressBar.visibility = View.GONE
+
+                            if(asyncTryCnt == 0) {
+                                Log.d(Common.MY_TAG, "CoroutineScope is completed")
+                                binding.btSearch.isEnabled = true
+                                mAdapter.notifyDataSetChanged()
+
+                                if (mTopicList.isEmpty()) {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "기사가 없습니다.!!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+                    }
+                } catch(te: TimeoutCancellationException) {
+                    Log.e(Common.MY_TAG, "Timetout!!! - asyncTryCnt[$asyncTryCnt]")
+                    withContext(Dispatchers.Main) {
+                        binding.btSearch.isEnabled = true
+
+                        Toast.makeText(
+                            applicationContext,
+                            "시간 초과",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+            /*
+            val jsoupAsyncTask =
+                JSoupParser(url, strKeyWord, type, engineType, articleMaxCnt, object : onPostExecuteListener {
+                    override fun onPostExecute(result: ArrayList<Article>, price: String) {
+                        //mTopicList.clear()
+                        var topic: Topic
+                        if(type == Common.ARTICLE_URL) {
+                            topic = Topic(mTopicList.size, keyWord.stocks, "", "", result)
+                            if(bReverse) {
+                                mTopicList.add(0, topic)    //맨 앞으로 추가
+                            } else {
+                                mTopicList.add(topic)
+                            }
+                            updateTextView(keyWord.stocks, result.size)
+                        } else if(type == Common.STOCK_URL) {
+                            if(bReverse) {
+                                mTopicList[0].code = keyWord.code
+                                mTopicList[0].price = price
+                            } else {
+                                if(mTopicList.size > 0) {
+                                    mTopicList[mTopicList.size-1].code = keyWord.code
+                                    mTopicList[mTopicList.size-1].price = price
+                                }
+                            }
+                        }
+                        mAdapter.notifyDataSetChanged()
+
+                        runOnUiThread {
+                            if (mTopicList.isEmpty()) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "기사가 없습니다.!!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                })
+            jsoupAsyncTask.execute()*/
+            //}   //end of for(type in Common.ARTICLE_URL..Common.STOCK_URL) {
         }
     }
 
