@@ -12,6 +12,8 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.kakaroo.mynewsfeed.R
 
 
@@ -24,7 +26,7 @@ class ArticleAdapter(private val context: Context, private val listData: ArrayLi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.article_item_recycler, parent, false)
+            .inflate(R.layout.article_item_cardview, parent, false)
 
         return CustomViewHolder(view).apply {}
     }
@@ -45,14 +47,23 @@ class ArticleAdapter(private val context: Context, private val listData: ArrayLi
         private val tvCorp: TextView = itemView.findViewById(R.id.tv_corp)
 
         fun setItem(article: Article) {
-            val imgName = if(article.imgUrl == "") R.drawable.news_thumb_jpg else article.imgUrl
 
-            Glide
-                .with(itemView.context)
-                .load(imgName)   //img drawable
-                .centerCrop()
-                .placeholder(android.R.drawable.stat_sys_upload)
-                .into(imgThumb)
+            if(article.imgUrl == "") {
+                Glide
+                    .with(itemView.context)
+                    .load(R.drawable.news_thumb_2)   //img drawable
+                    .circleCrop()
+                    .placeholder(android.R.drawable.stat_sys_upload)
+                    .into(imgThumb)
+            } else {
+                Glide
+                    .with(itemView.context)
+                    .load(article.imgUrl)   //img drawable
+                    .transform(CenterCrop(), RoundedCorners(20))
+                    .placeholder(android.R.drawable.stat_sys_upload)
+                    .into(imgThumb)
+            }
+
             tvDate.text = article.date.toString()
             tvTitle.text = article.title.toString()
             tvCorp.text = article.newsCorp.toString()

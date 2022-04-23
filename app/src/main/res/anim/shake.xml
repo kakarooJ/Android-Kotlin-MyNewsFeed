@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- duration(ms)동안 10번만큼 cycle_cnt번 흔든다 -->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="800"
+    android:fromXDelta="0"
+    android:interpolator="@anim/cycle_cnt"
+    android:toXDelta="10" />

@@ -57,4 +57,7 @@ dependencies {
 
     //Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+
+    //image view 확대
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 }

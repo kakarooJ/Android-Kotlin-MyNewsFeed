@@ -21,10 +21,12 @@
     <string-array name="engine_items">
         <item>Naver</item>
         <item>Google</item>
+        <item>Daum</item>
     </string-array>
 
     <string-array name="engine_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>

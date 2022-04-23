@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">News Feed</string>
     <string name="setting">설정</string>
-    <string name="reset_list">검색결과 지움</string>
+    <string name="reset_list">리셋</string>
     <string name="title_activity_settings">설정</string>
 
     <!-- Preference Titles -->

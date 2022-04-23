@@ -9,24 +9,41 @@
         android:background="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="8dp">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:background="#FFFFFF"
-            android:layout_weight="1"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="80dp">
 
             <TextView
                 android:id="@+id/tv_topic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:layout_margin="4dp"
-                android:textSize="18sp"
+                android:layout_margin="0dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="8dp"
+                android:layout_gravity="top|left"
+                android:textSize="20dp"
                 android:textStyle="bold"
                 android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tv_stock_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_gravity="center|left"
+                android:textSize="12sp"
+                android:lines="2"
+                android:textColor="#000000"/>
+
+            <ImageView
+                android:id="@+id/iv_stock_chart"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="2dp"
+                android:layout_gravity="top|right" />
 
             <TextView
                 android:id="@+id/tv_topicNum"
@@ -34,25 +51,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="12dp"
                 android:textColor="#000000"
-                android:textSize="12sp" />
-        </LinearLayout>
+                android:textSize="12sp"
+                android:layout_gravity="bottom|left" />
 
-        <TextView
-            android:id="@+id/tv_stock_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="0dp"
-            android:layout_marginRight="16dp"
-            android:textSize="10sp"
-            android:textColor="#000000"/>
+        </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_articles"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scrollbars="horizontal"
+            android:scrollbarFadeDuration="10"/>
 
     </LinearLayout>
 

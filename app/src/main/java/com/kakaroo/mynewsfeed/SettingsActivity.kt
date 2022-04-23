@@ -55,9 +55,9 @@ class SettingsActivity : AppCompatActivity() {
             keywordPref?.setOnPreferenceChangeListener{ preference, newValue ->
                 if(newValue == null || newValue == "") {
                     val pref = PreferenceManager.getDefaultSharedPreferences(this.context)
-                    pref.edit().putString("keyword_key", "").apply()
-                    Log.i(Common.MY_TAG, "키워드 입력값이 없습니다.")
-                    preference.summary = Common.KEYOWRD_HINT
+                    pref.edit().putString("keyword_key", ""/*Common.DEFAULT_KEYWORD*/).apply()
+                    Log.i(Common.MY_TAG, "키워드 입력값이 없습니다")//어 디폴트 키로 대체합니다.")
+                    preference.summary = Common.KEYOWRD_HINT//Common.DEFAULT_KEYWORD
                 } else {
                     preference.summary = newValue.toString()
                 }
