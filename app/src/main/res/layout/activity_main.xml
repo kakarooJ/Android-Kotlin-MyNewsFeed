@@ -9,8 +9,8 @@
     <EditText
         android:id="@+id/et_keyword"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
@@ -21,6 +21,9 @@
         android:selectAllOnFocus="true"
         android:text=""
         android:textSize="16sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:background="@drawable/edittext_background"
         app:layout_constraintEnd_toStartOf="@+id/bt_search"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -48,6 +51,7 @@
         android:layout_marginEnd="0dp"
         android:textSize="8sp"
         android:ellipsize="start"
+        android:paddingTop="1dp"
         app:layout_constraintStart_toStartOf="@+id/et_keyword"
         app:layout_constraintTop_toBottomOf="@+id/et_keyword"
         android:singleLine="true" />
@@ -55,14 +59,16 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_keywords"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginBottom="0dp"
+        android:scrollbars="horizontal"
+        android:scrollbarFadeDuration="10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bt_search" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_result" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -78,12 +84,13 @@
         android:id="@+id/rv_topics"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         android:scrollbars="vertical"
         android:scrollbarFadeDuration="10"
+        android:background="@drawable/main_recycler_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

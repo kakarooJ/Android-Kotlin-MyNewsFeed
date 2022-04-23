@@ -2,11 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/setting"
-        android:title="@string/setting"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/reset_list"
         android:title="@string/reset_list"
+        android:icon="@drawable/baseline_clear_black_24"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/setting"
+        android:title="@string/setting"
+        android:icon="@drawable/baseline_settings_black_24"
         app:showAsAction="always" />
 </menu>

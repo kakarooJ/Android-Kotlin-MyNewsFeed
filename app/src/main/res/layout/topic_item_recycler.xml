@@ -2,18 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="4dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:orientation="vertical"
-        android:background="#FFFFFF"
+        android:background="@drawable/topic_recycler_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="0dp">
 
         <FrameLayout
+            android:id="@+id/frame_topic"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="80dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
             <TextView
                 android:id="@+id/tv_topic"
@@ -23,7 +29,8 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginLeft="8dp"
                 android:layout_gravity="top|left"
-                android:textSize="20dp"
+                android:paddingTop="4dp"
+                android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="#000000" />
 
@@ -39,10 +46,10 @@
 
             <ImageView
                 android:id="@+id/iv_stock_chart"
-                android:layout_width="100dp"
-                android:layout_height="80dp"
+                android:layout_width="160dp"
+                android:layout_height="72dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginRight="0dp"
                 android:layout_gravity="top|right" />
 
             <TextView
@@ -62,6 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="horizontal"
+            android:background="@drawable/article_recycler_background"
             android:scrollbarFadeDuration="10"/>
 
     </LinearLayout>

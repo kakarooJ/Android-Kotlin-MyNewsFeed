@@ -147,6 +147,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         setKeyWordListFromPref()
         mKeyWordAdapter.notifyDataSetChanged()
+        setTopicRecyclerBackground()
         super.onResume()
     }
 
@@ -194,9 +195,19 @@ class MainActivity : AppCompatActivity() {
                 mKeyWordAdapter.notifyDataSetChanged()
                 mTopicList.clear()
                 mTopicAdapter.notifyDataSetChanged()
+                binding.tvResult.text = ""
+                setTopicRecyclerBackground()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setTopicRecyclerBackground() {
+        if(mTopicList.isNullOrEmpty()) {
+            binding.rvTopics.background = null
+        } else {
+            binding.rvTopics.setBackgroundResource(R.drawable.main_recycler_background)
+        }
     }
 
     private fun registerListener() {
@@ -255,7 +266,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         hideKeyboard()  //키보드를 내린다.
-        //binding.etKeyword.setText("")   //Editor를 지운다.
+        binding.etKeyword.setText("")   //Editor를 지운다.
+        binding.etKeyword.clearFocus()
 
         var bReverse = true //최신 기사가 가장 위로 올라오게 하기 위해
         if (!bManualInput) { //Editor가 비어 있어 설정값에서 값을 가져오는 경우
@@ -332,6 +344,7 @@ class MainActivity : AppCompatActivity() {
                                 Log.d(Common.MY_TAG, "CoroutineScope is completed")
                                 binding.btSearch.isEnabled = true
                                 mTopicAdapter.notifyDataSetChanged()
+                                setTopicRecyclerBackground()
 
                                 if (mTopicList.isEmpty()) {
                                     Toast.makeText(
