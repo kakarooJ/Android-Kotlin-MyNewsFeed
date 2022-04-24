@@ -1,18 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MyNewsFeed" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#FFFFFF</item>
-        <item name="colorPrimaryVariant">#FFFFFF</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/black</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">#FFFFFF</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#FFFFFF</item>            <!--AppTitleBar-->
+        <item name="android:colorPrimaryDark">#FFFFFF</item>    <!--StatusBar-->
+        <item name="android:windowLightStatusBar">true</item>   <!--StatusBar Text Color : black(true) -->
+    </style>
+
+    <style name="Theme.MyNewsFeed.MainTheme">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">#00479b</item>
+        <item name="android:titleTextStyle">@style/ActionBarTextColor</item>
+    </style>
+    <style name="ActionBarTextColor" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">#000000</item>
     </style>
 
     <style name="AnimationPopupStyle">

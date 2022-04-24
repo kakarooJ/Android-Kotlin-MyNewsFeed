@@ -122,4 +122,11 @@ object Common {
         "복수의 키워드는 \",\"로 구분하고, 주식종목코드는 \"#\"을 붙여주세요. (예.삼성전자#005930,코로나19,LG#003550)"
     const val DEFAULT_KEYWORD =
         "SK이노베이션#096770,현대차#005380,SK#034730,하이트진로#000080,LG에너지솔루션#373220,카카오#035720,원익피앤이#131390,코스모신소재#005070,신성델타테크#065350"
+
+    //STOCK RECYCLER VIEW LAYOUT
+    const val TOPIC_LAYOUT_HEIGHT  =   225 //Topic Name, Stock Price, Stock Num 이 포함된 높이
+    const val TOPIC_MIN_LAYOUT_HEIGHT  =   125 //Topic Name, Stock Num 이 포함된 높이
+    const val TOPIC_STOCK_LAYOUT_HEIGHT  =   100 //Stock Price 의 높이
+
+    const val TOPIC_STOCK_MARGIN_LEFT_RIGHT  =   23
 }

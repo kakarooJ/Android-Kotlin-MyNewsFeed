@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">News Feed</string>
+    <string name="app_name">키워드 뉴스</string>
     <string name="setting">설정</string>
     <string name="reset_list">리셋</string>
     <string name="title_activity_settings">설정</string>
@@ -10,7 +10,7 @@
     <string name="service_header">서비스 카테고리</string>
 
     <!-- keyword Preferences -->
-    <string name="keywords">입력한 키워드</string>
+    <string name="keywords">입력 키워드(키워드 구분자[,] 주식 구분자[#])</string>
     <string name="keywords_description">복수의 키워드는 ","로 구분하고, 주식종목코드는 "#"을 붙여주세요. \n(예.삼성전자#005930,코로나19,LG#003550)</string>
     <string name="search_engine">검색 엔진</string>
     <string name="result_reverse_order">검색결과 역순 정렬</string>

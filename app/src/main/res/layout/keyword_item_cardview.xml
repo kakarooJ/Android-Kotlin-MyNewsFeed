@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="10dp"
-            card_view:cardBackgroundColor="#ECC2CA"
+            card_view:cardBackgroundColor="@color/keyword_color"
             card_view:cardElevation="3dp"
             card_view:contentPadding="4dp">
 

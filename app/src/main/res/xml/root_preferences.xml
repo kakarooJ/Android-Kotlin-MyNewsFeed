@@ -20,12 +20,12 @@
             app:title="@string/search_engine"
             app:useSimpleSummaryProvider="true"
             app:iconSpaceReserved="false"/>
-
+<!--
         <SwitchPreferenceCompat
             app:key="result_order_key"
             app:title="@string/result_reverse_order"
             app:iconSpaceReserved="false"/>
-
+-->
         <EditTextPreference
             app:key="keyword_maxnum_key"
             app:title="@string/article_maxnum"
@@ -35,7 +35,7 @@
             android:dialogLayout="@layout/preference_edit_text"/>
 
     </PreferenceCategory>
-
+<!--
     <PreferenceCategory app:title="@string/request_header"
         app:iconSpaceReserved="false"
         app:key="request_category_key"
@@ -69,7 +69,6 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
-
     </PreferenceCategory>
-
+-->
 </PreferenceScreen>

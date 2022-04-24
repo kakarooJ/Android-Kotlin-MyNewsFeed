@@ -2,6 +2,9 @@
 <resources>
 
     <style name="Theme.MyNewsFeed" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">#FFFFFF</item>            <!--AppTitleBar-->
+        <item name="android:colorPrimaryDark">#FFFFFF</item>    <!--StatusBar-->
+        <item name="android:windowLightStatusBar">true</item>   <!--StatusBar Text Color : black(true) -->
     </style>
 
     <style name="Theme.MyNewsFeed.MainTheme">

@@ -11,7 +11,13 @@
         android:id="@+id/tv_stock_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20dp"
         android:text="stock chart"
+        android:padding = "8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/main_recycler_background"
         android:fontFamily="@font/hmkmmag"/>
 <!--
     <TextView
@@ -34,9 +40,12 @@
         android:id="@+id/iv_stock_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="4dp"
+        android:padding="6dp"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"/>
+        android:layout_marginRight="4dp"
+        android:background="@drawable/main_recycler_background"
+        />
 
 </LinearLayout>

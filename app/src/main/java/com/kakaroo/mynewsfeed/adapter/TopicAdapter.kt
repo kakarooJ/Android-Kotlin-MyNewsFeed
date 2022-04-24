@@ -28,9 +28,9 @@ import androidx.core.view.marginLeft
 import android.view.ViewGroup.MarginLayoutParams
 
 import android.view.ViewGroup
-
-
-
+import androidx.core.view.marginBottom
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 
 
 class TopicAdapter(private val context: Context, private val listData: ArrayList<Topic>?)
@@ -82,11 +82,24 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
                 tvStockPrice.visibility = View.GONE
                 ivStockChart.visibility = View.GONE
                 val height = frameLayout.layoutParams.height
-                val width = frameLayout.layoutParams.width
+                //val width = frameLayout.layoutParams.width
                 val marginLeft = frameLayout.marginLeft
-                frameLayout.layoutParams = LinearLayout.LayoutParams(width, height - 100)
-                (frameLayout.layoutParams as LinearLayout.LayoutParams).setMargins(20, 4, 20, 4)
+                val marginRight = frameLayout.marginRight
+                val marginTop = frameLayout.marginTop
+                val marginBottom = frameLayout.marginBottom
+                val resizeHeight = if(height > Common.TOPIC_MIN_LAYOUT_HEIGHT) height - Common.TOPIC_STOCK_LAYOUT_HEIGHT
+                    else Common.TOPIC_MIN_LAYOUT_HEIGHT
+                frameLayout.layoutParams = LinearLayout.LayoutParams(frameLayout.layoutParams.width, resizeHeight)
+                (frameLayout.layoutParams as LinearLayout.LayoutParams).setMargins(
+                    marginLeft, marginTop, marginRight, marginBottom)
             } else {
+                tvStockPrice.visibility = View.VISIBLE
+                ivStockChart.visibility = View.VISIBLE
+
+                frameLayout.layoutParams = LinearLayout.LayoutParams(frameLayout.layoutParams.width, Common.TOPIC_LAYOUT_HEIGHT)
+                (frameLayout.layoutParams as LinearLayout.LayoutParams).setMargins(
+                    Common.TOPIC_STOCK_MARGIN_LEFT_RIGHT, 0, Common.TOPIC_STOCK_MARGIN_LEFT_RIGHT, 0)
+
                 Glide
                     .with(itemView.context)
                     .load(topic.chartUrl)   //img drawable
@@ -118,7 +131,7 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
             ivStockChart.setOnClickListener(View.OnClickListener()  { _ ->
                 //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Common.STOCK_URL_NAVER + topic.code))
                 //mContext.startActivity(intent)
-                MainActivity.getInstance()?.configureDialog(topic.title+" #"+topic.code, topic.chartUrl)
+                MainActivity.getInstance()?.configureDialog(topic.title, topic.code, topic.chartUrl)
                 MainActivity.getInstance()?.mDialog?.show()
             })
         }

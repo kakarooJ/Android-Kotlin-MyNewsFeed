@@ -40,10 +40,12 @@ import java.lang.Integer.parseInt
 import android.graphics.BitmapFactory
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.widget.TextView
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -118,6 +120,17 @@ class MainActivity : AppCompatActivity() {
                 handled = true
             }
             handled
+        }
+    }
+
+    private fun showTerribleBackground() {
+        binding.ivBackground.setImageDrawable(getResources().getDrawable(R.drawable.error_background))
+
+        thread(start = true) {
+            Thread.sleep(200)
+            runOnUiThread{
+                binding.ivBackground.setImageDrawable(getResources().getDrawable(R.drawable.background_img))
+            }
         }
     }
 
@@ -197,6 +210,8 @@ class MainActivity : AppCompatActivity() {
                 mTopicAdapter.notifyDataSetChanged()
                 binding.tvResult.text = ""
                 setTopicRecyclerBackground()
+
+                //showTerribleBackground()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -208,6 +223,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.rvTopics.setBackgroundResource(R.drawable.main_recycler_background)
         }
+    }
+
+    private fun recyclerScrollToPosition(position: Int) {
+        binding.rvTopics.scrollToPosition(position)
     }
 
     private fun registerListener() {
@@ -345,6 +364,8 @@ class MainActivity : AppCompatActivity() {
                                 binding.btSearch.isEnabled = true
                                 mTopicAdapter.notifyDataSetChanged()
                                 setTopicRecyclerBackground()
+                                recyclerScrollToPosition(0)
+
 
                                 if (mTopicList.isEmpty()) {
                                     Toast.makeText(
@@ -665,7 +686,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getSearchEngine(engineType: Int) = Common.SearchEngine.values()[engineType]
 
-    fun configureDialog(textString: String, imgUrl: String) {
+    fun configureDialog(stockName: String, stockCode: String, imgUrl: String) {
         if(mDialog == null) {
             Log.e(Common.MY_TAG, "mDialog is null!! return!!")
             return
@@ -688,7 +709,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val textView: TextView = mDialog.findViewById(R.id.tv_stock_name)
-        textView.text = textString
+        textView.text = "$stockName#$stockCode"
+
+        textView.setOnClickListener(View.OnClickListener()  { _ ->
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Common.STOCK_URL_NAVER + stockCode))
+            this.startActivity(intent)
+        })
 
         //Image zoom in-out
         val imageView: SubsamplingScaleImageView = mDialog.findViewById(R.id.iv_stock_chart)
