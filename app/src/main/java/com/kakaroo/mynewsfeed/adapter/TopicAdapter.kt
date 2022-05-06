@@ -23,6 +23,7 @@ import android.R.attr.popupLayout
 import android.view.Gravity
 
 import android.util.DisplayMetrics
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.core.view.marginLeft
 import android.view.ViewGroup.MarginLayoutParams
@@ -31,6 +32,9 @@ import android.view.ViewGroup
 import androidx.core.view.marginBottom
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TopicAdapter(private val context: Context, private val listData: ArrayList<Topic>?)
@@ -59,7 +63,7 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
         )
         holder.rvArticle.setHasFixedSize(true)
         //holder.tv_topic.text = mTopicList?.get(position)?.title
-        holder.tvTopicNum.text = mTopicList?.get(position)?.articles?.size.toString() + " 개"
+        holder.tvTopicNum.text = mTopicList?.get(position)?.articles?.size.toString() + " 개" + "    <${topic?.time}>"
         //holder.tv_stockPrice.text = mTopicList?.get(position)?.price
     }
 
@@ -78,17 +82,24 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
             tvTopic.text = topic.title
             tvStockPrice.text = topic.price
 
+            if(MainActivity.getInstance()?.bSmallScreenSize == true)
+                tvStockPrice.textSize = Common.TOPIC_STOCK_SMALL_TEXT_SIZE    //dp : x4
+
             if(topic.chartUrl.isEmpty() || topic.price.isEmpty()) {
                 tvStockPrice.visibility = View.GONE
                 ivStockChart.visibility = View.GONE
+
                 val height = frameLayout.layoutParams.height
                 //val width = frameLayout.layoutParams.width
                 val marginLeft = frameLayout.marginLeft
                 val marginRight = frameLayout.marginRight
                 val marginTop = frameLayout.marginTop
                 val marginBottom = frameLayout.marginBottom
-                val resizeHeight = if(height > Common.TOPIC_MIN_LAYOUT_HEIGHT) height - Common.TOPIC_STOCK_LAYOUT_HEIGHT
+
+                val resizeHeight =
+                    if(MainActivity.getInstance()?.bSmallScreenSize == true) Common.TOPIC_MIN_LAYOUT_HEIGHT_SMALL_SIZE
                     else Common.TOPIC_MIN_LAYOUT_HEIGHT
+
                 frameLayout.layoutParams = LinearLayout.LayoutParams(frameLayout.layoutParams.width, resizeHeight)
                 (frameLayout.layoutParams as LinearLayout.LayoutParams).setMargins(
                     marginLeft, marginTop, marginRight, marginBottom)
@@ -96,7 +107,11 @@ class TopicAdapter(private val context: Context, private val listData: ArrayList
                 tvStockPrice.visibility = View.VISIBLE
                 ivStockChart.visibility = View.VISIBLE
 
-                frameLayout.layoutParams = LinearLayout.LayoutParams(frameLayout.layoutParams.width, Common.TOPIC_LAYOUT_HEIGHT)
+                val resizeHeight =
+                    if(MainActivity.getInstance()?.bSmallScreenSize == true) Common.TOPIC_LAYOUT_HEIGHT+Common.TOPIC_STOCK_LAYOUT_HEIGHT_SMALL_SIZE
+                    else Common.TOPIC_LAYOUT_HEIGHT
+
+                frameLayout.layoutParams = LinearLayout.LayoutParams(frameLayout.layoutParams.width, resizeHeight)
                 (frameLayout.layoutParams as LinearLayout.LayoutParams).setMargins(
                     Common.TOPIC_STOCK_MARGIN_LEFT_RIGHT, 0, Common.TOPIC_STOCK_MARGIN_LEFT_RIGHT, 0)
 

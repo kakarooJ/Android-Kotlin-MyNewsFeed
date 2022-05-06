@@ -5,4 +5,9 @@ data class Topic(val idx: Int = 0,
                  val code: String = "",
                  val price: String = "",
                  val chartUrl: String = "",
-                 val articles: ArrayList<Article>)
+                 val time: String = "",
+                 val articles: ArrayList<Article>) {
+    init {
+
+    }
+}

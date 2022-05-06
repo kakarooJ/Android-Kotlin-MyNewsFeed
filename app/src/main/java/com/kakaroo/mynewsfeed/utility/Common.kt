@@ -99,11 +99,13 @@ object Common {
     const val STOCK_PRICE_PLUS_WORD = "플러스"
     const val STOCK_PRICE_MINUS_WORD = "마이너스"
 
-    const val HTTP_CRAWLING_TIMEOUT_MILLIS = 10000L
+    const val HTTP_CRAWLING_TIMEOUT_MILLIS = 8000L
+    const val JOSUP_CRAWLING_TRY_CNT = 500
 
     const val REQUEST_INTERNET_PERMISSION = 10
 
     //Settings
+    const val ARTICLE_DEFAULT_NUM = 15
     const val ARTICLE_MAX_NUM = 50
     const val CRAWLING_PERIOD_HOUR = 2   //2시간마다
     const val JSOUP_PARSING_DATA_MAX_NUM = 10
@@ -124,9 +126,14 @@ object Common {
         "SK이노베이션#096770,현대차#005380,SK#034730,하이트진로#000080,LG에너지솔루션#373220,카카오#035720,원익피앤이#131390,코스모신소재#005070,신성델타테크#065350"
 
     //STOCK RECYCLER VIEW LAYOUT
+    const val TOPIC_STOCK_SMALL_TEXT_SIZE = 8.0f //주식 가격 보정
+
     const val TOPIC_LAYOUT_HEIGHT  =   225 //Topic Name, Stock Price, Stock Num 이 포함된 높이
     const val TOPIC_MIN_LAYOUT_HEIGHT  =   125 //Topic Name, Stock Num 이 포함된 높이
+    const val TOPIC_MIN_LAYOUT_HEIGHT_SMALL_SIZE  =   175 //Topic Name, Stock Num 이 포함된 높이
+
     const val TOPIC_STOCK_LAYOUT_HEIGHT  =   100 //Stock Price 의 높이
+    const val TOPIC_STOCK_LAYOUT_HEIGHT_SMALL_SIZE  =   100 //Stock Price 의 높이
 
     const val TOPIC_STOCK_MARGIN_LEFT_RIGHT  =   23
 }

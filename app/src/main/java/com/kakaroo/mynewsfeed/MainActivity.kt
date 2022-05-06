@@ -40,12 +40,20 @@ import java.lang.Integer.parseInt
 import android.graphics.BitmapFactory
 
 import android.graphics.Bitmap
+import android.graphics.Point
 import android.net.Uri
 import android.widget.TextView
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
+import android.util.DisplayMetrics
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -77,6 +85,9 @@ class MainActivity : AppCompatActivity() {
 
     var mTopicAdapter = TopicAdapter(this, mTopicList)
     var mKeyWordAdapter = KeywordAdapter(this, mKeyWordList)
+
+    var bSmallScreenSize: Boolean = false
+    var mCrawlingCnt: Int = 0
 
     lateinit var mTopicRecyclerView: RecyclerView
     lateinit var mKeywordRecyclerView: RecyclerView
@@ -112,6 +123,8 @@ class MainActivity : AppCompatActivity() {
         registerListener()
         initializeKeyWordList()
 
+        checkScreenSize()
+
         // editText에서 완료 클릭 시
         binding.etKeyword.setOnEditorActionListener { v, actionId, event ->
             var handled = false
@@ -121,6 +134,19 @@ class MainActivity : AppCompatActivity() {
             }
             handled
         }
+    }
+
+    private fun checkScreenSize() {
+        val display = windowManager.defaultDisplay // in case of Activity
+/* val display = activity!!.windowManaver.defaultDisplay */ // in case of Fragment
+        val size = Point()
+        display.getSize(size)   //getRealSize(size)
+        val width = size.x
+        val height = size.y
+
+        bSmallScreenSize = (height/width < 2.0f)
+
+        Log.e(Common.MY_TAG, "checkScreenSize:: w:$width, h:$height, $bSmallScreenSize")
     }
 
     private fun showTerribleBackground() {
@@ -293,7 +319,7 @@ class MainActivity : AppCompatActivity() {
             bReverse = mPref.getBoolean("result_order_key", false)
         }
         val articleMaxCnt: Int =
-            parseInt(mPref.getString("keyword_maxnum_key", Common.ARTICLE_MAX_NUM.toString()))
+            parseInt(mPref.getString("keyword_maxnum_key", Common.ARTICLE_DEFAULT_NUM.toString()))
         val engineType: Int = parseInt(
             mPref.getString(
                 "engine_key",
@@ -305,6 +331,7 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
 
         var asyncTryCnt = 0
+        mCrawlingCnt = 0
 
         for ((idx, keyWord) in searchList.withIndex()) {
 
@@ -314,7 +341,7 @@ class MainActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     withTimeout(Common.HTTP_CRAWLING_TIMEOUT_MILLIS) {
-                        //Log.e(Common.MY_TAG, "Force to stop due to Coroutine's Timeout")
+                        //Log.w(Common.MY_TAG, "Force to stop due to Coroutine's Timeout")
                         val coroutine = async {
                             executeCrawling(
                                 url,
@@ -324,6 +351,8 @@ class MainActivity : AppCompatActivity() {
                                 articleMaxCnt
                             )
                         }
+
+                        //Log.d(Common.MY_TAG, "asyncTryCnt[$asyncTryCnt]")
 
                         val result = coroutine.await()
                         //Log.d(Common.MY_TAG, "asyncTryCnt[$asyncTryCnt], keyWord.stocks[${keyWord.stocks}")
@@ -335,22 +364,17 @@ class MainActivity : AppCompatActivity() {
                             code = keyWord.stockCode,
                             price= result.second.price,
                             chartUrl = result.second.chartUrl,
+                            time = getCurrentTime(),
                             articles = result.first
                         )
 
                         if (bReverse) {
                             mTopicList.add(0, topic)    //맨 앞으로 추가
-                            //mTopicList[0].code = keyWord.stockCode
-                            //mTopicList[0].price = result.second.price
-                            //mTopicList[0].chartUrl = result.second.chartUrl
                         } else {
                             mTopicList.add(topic)
-                            //mTopicList[mTopicList.size - 1].code = keyWord.stockCode
-                            //mTopicList[mTopicList.size - 1].price = result.second.price
-                            //mTopicList[mTopicList.size - 1].chartUrl = result.second.chartUrl
                         }
 
-                        if (!bManualInput && asyncTryCnt == 0) {
+                        if (!bManualInput && asyncTryCnt == 0 && mTopicList.isNotEmpty()) {
                             mTopicList.sortWith(compareBy<Topic> { it.idx })
                         }
 
@@ -381,6 +405,8 @@ class MainActivity : AppCompatActivity() {
                     Log.e(Common.MY_TAG, "Timetout!!! - asyncTryCnt[$asyncTryCnt]")
                     withContext(Dispatchers.Main) {
                         binding.btSearch.isEnabled = true
+                        binding.progressBar.visibility = View.GONE
+                        mCrawlingCnt = 0
 
                         Toast.makeText(
                             applicationContext,
@@ -453,13 +479,30 @@ class MainActivity : AppCompatActivity() {
                     pageIndex++
                 }
 
+                Log.i(Common.MY_TAG, "executeCrawling URL: ${url + keyWord + pageUri}")
+                mCrawlingCnt++
+
                 val doc: Document = Jsoup.connect(url + keyWord + pageUri)
+                    .timeout(5000)
                     .ignoreContentType(true)
                     .get()
+
+                if(doc == null) {
+                    Log.e(Common.MY_TAG, "Not found articles in ${url + keyWord + pageUri}")
+                    return Pair(mList, StockInfo(mPrice, mChartUrl))
+                } else {
+                    Log.i(Common.MY_TAG, "doc is found of: ${url + keyWord + pageUri}")
+                }
 
                 if (engineType == Common.SearchEngine.ENGINE_GOOGLE.value) {
                     val contentElements: Elements =
                         doc.select(Common.SearchEngine.values()[engineType].tag.item)
+
+                    if(contentElements.isEmpty()) {
+                        Log.w(Common.MY_TAG, "contentElements is empty")
+                        break
+                    }
+
                     for ((i, elem) in contentElements.withIndex()) {
                         if (i + mList.size > maxCnt) {   //i는 1부터
                             break
@@ -494,6 +537,11 @@ class MainActivity : AppCompatActivity() {
                     val contentElements: Elements =
                         headElement.select(Common.SearchEngine.values()[engineType].tag.item2)
 
+                    if(contentElements.isEmpty()) {
+                        Log.w(Common.MY_TAG, "contentElements is empty")
+                        break
+                    }
+
                     for ((i, elem) in contentElements.withIndex()) {
                         if (i + mList.size > maxCnt) {   //i는 0부터
                             break
@@ -525,6 +573,11 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     val contentElements: Elements =
                         doc.select(Common.SearchEngine.values()[engineType].tag.item)
+
+                    if(mCrawlingCnt >= Common.JOSUP_CRAWLING_TRY_CNT) {
+                        Log.w(Common.MY_TAG, "mCrawlingCnt[${mCrawlingCnt}] is exceed")
+                        break
+                    }
                     val contentElements2: Elements =
                         doc.select(Common.SearchEngine.values()[engineType].tag.item2) //img
                     for ((i, elem) in contentElements.withIndex()) {
@@ -594,6 +647,8 @@ class MainActivity : AppCompatActivity() {
                 // time the internal status will be properly set, and we'll be
                 // able to retrieve it.
                 Log.e(Common.MY_TAG, "Jsoup connection has error: $e")
+                //return Pair(mList, StockInfo(mPrice, mChartUrl))
+                break
             }
         } while (mList.size < maxCnt)
 
@@ -745,5 +800,19 @@ class MainActivity : AppCompatActivity() {
             Log.e(Common.MY_TAG, "getBitmapFromURL error: ${e.message}")
             null
         }
+    }
+
+    private fun getCurrentTime(): String {
+        // 현재시간을 가져오기
+        val longNow = System.currentTimeMillis()
+
+        // 현재 시간을 Date 타입으로 변환
+        val tDate = Date(longNow)
+
+        // 날짜, 시간을 가져오고 싶은 형태 선언
+        val tDateFormat = SimpleDateFormat("yyyy-MM-dd kk:mm", Locale("ko", "KR"))
+
+        // 현재 시간을 dateFormat 에 선언한 형태의 String 으로 변환
+        return tDateFormat.format(tDate)
     }
 }
